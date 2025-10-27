@@ -1,0 +1,7 @@
+{
+  "network": "bscTestnet",
+  "chainId": 97,
+  "contractAddress": "0xA18F113ADC48B3823057ED892989320b5FD5C055",
+  "deploymentTime": "2025-10-27T13:08:22.585Z",
+  "compiler": "0.8.19"
+}

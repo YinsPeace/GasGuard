@@ -1,0 +1,79 @@
+# Environment variables (CRITICAL - NEVER COMMIT)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build artifacts
+dist/
+build/
+*/dist/
+*/build/
+
+# Smart contract artifacts
+artifacts/
+cache/
+backend/artifacts/
+backend/cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+.temp/
+.cache/
+
+# Lock files (keeping for reproducible builds)
+# Uncomment if you want to ignore them:
+# pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+
+# Claude Code personal config
+.claude/
+.windsurf/
+
+# Development/planning docs (keep these local, not in repo)
+PLAN.md
+HACKATHON_*.md
+*_UPDATE.md
+*_RESOLVED.md
+*_SUCCESS.md
+*_FIX.md
+BLOCKSCOUT_INTEGRATION.md
+COMPLETED_FEATURES.md
+ISSUE_RESOLVED.md
+REDEPLOYMENT_SUCCESS.md
+RESTART_ORACLE.md
+PREDICTION_HISTORY_FEATURE.md
+TABBED_INTERFACE_UPDATE.md
+TAB_CONSOLIDATION_UPDATE.md
+MENU_ACTIVE_STATE_FIX.md
+README_MULTICHAIN_TEST.md
