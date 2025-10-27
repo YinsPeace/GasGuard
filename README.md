@@ -7,7 +7,7 @@
 
 🌐 **Live Demo:** https://gasguard.gen-a.dev
 📜 **Smart Contract:** [BSC Testnet](./SMART_CONTRACT.md) - `0xA18F113ADC48B3823057ED892989320b5FD5C055`
-🎥 **Demo Video:** [YouTube](YOUR_VIDEO_LINK)
+🎥 **Demo Video:** To be added
 🔍 **Contract Explorer:** https://testnet.bscscan.com/address/0xA18F113ADC48B3823057ED892989320b5FD5C055
 
 ---
