@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { connectDB } = require('./database');
+const User = require('./models/User');
 const gasTracker = require('./gasTracker');
 const savingsTracker = require('./savingsTracker');
 const predictor = require('./gasPricePredictor');
@@ -76,6 +77,19 @@ app.get('/api/transactions/savings/:walletAddress', async (req, res) => {
 
     if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
       return res.status(400).json({ success: false, error: 'Invalid wallet address format' });
+    }
+
+    // Create/update user record when they view their savings (shows engagement)
+    try {
+      await User.findOneAndUpdate(
+        { walletAddress: walletAddress.toLowerCase() },
+        { walletAddress: walletAddress.toLowerCase() },
+        { upsert: true, new: true }
+      );
+      console.log(`👤 [USER] Created/updated user record for ${walletAddress} (viewed savings)`);
+    } catch (dbError) {
+      console.error(`❌ [USER] Failed to create/update user:`, dbError);
+      // Don't fail the request if user creation fails
     }
 
     const savingsReport = await transactionTracker.getUserSavingsReport(walletAddress);

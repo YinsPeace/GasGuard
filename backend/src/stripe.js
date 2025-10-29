@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const User = require('./models/User');
 
 // In-memory storage for active subscriptions
 const userSubscriptions = new Map();
@@ -105,6 +106,26 @@ async function handleWebhook(rawBody, signature) {
         }
       }
 
+      // Create/update user in MongoDB
+      try {
+        await User.findOneAndUpdate(
+          { walletAddress: walletAddress.toLowerCase() },
+          {
+            walletAddress: walletAddress.toLowerCase(),
+            'subscriptionStatus.isSubscribed': true,
+            'subscriptionStatus.status': 'trialing',
+            'subscriptionStatus.stripeCustomerId': session.customer,
+            'subscriptionStatus.stripeSubscriptionId': session.subscription,
+            'subscriptionStatus.startedAt': new Date(),
+            'subscriptionStatus.trialEnd': new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)),
+          },
+          { upsert: true, new: true }
+        );
+        console.log(`✅ [STRIPE WEBHOOK] User created/updated in MongoDB for ${walletAddress}`);
+      } catch (dbError) {
+        console.error(`❌ [STRIPE WEBHOOK] Failed to create/update user in MongoDB:`, dbError);
+      }
+
       // Mark that this wallet has had a trial
       const walletLower = walletAddress.toLowerCase();
       if (!trialHistory.has(walletLower)) {
@@ -155,10 +176,43 @@ async function handleWebhook(rawBody, signature) {
             startedAt: Date.now(),
             trialEnd: subscription.trial_end ? subscription.trial_end * 1000 : null,
           });
+
+          // Update MongoDB user record
+          try {
+            await User.findOneAndUpdate(
+              { walletAddress: wallet },
+              {
+                'subscriptionStatus.isSubscribed': true,
+                'subscriptionStatus.status': subscription.status,
+                'subscriptionStatus.stripeCustomerId': subscription.customer,
+                'subscriptionStatus.stripeSubscriptionId': subscription.id,
+                'subscriptionStatus.trialEnd': subscription.trial_end ? new Date(subscription.trial_end * 1000) : null,
+                'subscriptionStatus.currentPeriodEnd': subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : null,
+              },
+              { upsert: true }
+            );
+            console.log(`✅ [STRIPE WEBHOOK] MongoDB updated for ${wallet}: ${subscription.status}`);
+          } catch (dbError) {
+            console.error(`❌ [STRIPE WEBHOOK] Failed to update MongoDB:`, dbError);
+          }
         } else {
           // Subscription cancelled or expired - keep trial history but remove active subscription
           userSubscriptions.delete(wallet);
-          console.log(`⚠️  [STRIPE WEBHOOK] Subscription ${subscription.status} for ${wallet}, trial history preserved`);
+
+          // Update MongoDB to reflect cancelled status
+          try {
+            await User.findOneAndUpdate(
+              { walletAddress: wallet },
+              {
+                'subscriptionStatus.isSubscribed': false,
+                'subscriptionStatus.status': subscription.status,
+                'subscriptionStatus.currentPeriodEnd': subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : null,
+              }
+            );
+            console.log(`⚠️  [STRIPE WEBHOOK] Subscription ${subscription.status} for ${wallet}, MongoDB updated`);
+          } catch (dbError) {
+            console.error(`❌ [STRIPE WEBHOOK] Failed to update MongoDB:`, dbError);
+          }
         }
 
         console.log(`Subscription updated for ${wallet}: ${subscription.status}`);

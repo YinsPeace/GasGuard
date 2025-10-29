@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { BlockscoutApi, SUPPORTED_CHAINS } = require('../services/blockscoutApi');
+const User = require('../models/User');
 
 // Middleware to validate chain parameter
 function validateChain(req, res, next) {
@@ -53,14 +54,27 @@ router.get('/gas/:chain', validateChain, async (req, res) => {
 router.get('/savings/:chain/:walletAddress', validateChain, async (req, res) => {
   try {
     const { walletAddress } = req.params;
-    
+
     if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
       return res.status(400).json({
         success: false,
         error: 'Invalid wallet address'
       });
     }
-    
+
+    // Create/update user record when they view multichain savings
+    try {
+      await User.findOneAndUpdate(
+        { walletAddress: walletAddress.toLowerCase() },
+        { walletAddress: walletAddress.toLowerCase() },
+        { upsert: true, new: true }
+      );
+      console.log(`👤 [USER] Created/updated user record for ${walletAddress} (viewed ${req.chain} savings)`);
+    } catch (dbError) {
+      console.error(`❌ [USER] Failed to create/update user:`, dbError);
+      // Don't fail the request if user creation fails
+    }
+
     // Fetch transactions using Blockscout
     const transactions = await req.chainApi.fetchUserTransactions(walletAddress);
     
