@@ -248,8 +248,8 @@ export function SavingsHero({ walletAddress }) {
           </Button>
         )}
 
-        {/* Premium User Message */}
-        {subscription?.isSubscribed && totalSaved >= 0 && overpaidPercentage < 15 && (
+        {/* Premium User Message - Only show if user has good savings AND optimal timing */}
+        {subscription?.isSubscribed && totalSaved >= 0 && overpaidPercentage < 15 && optimalCount >= transactionCount * 0.5 && (
           <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Crown className="w-5 h-5 text-yellow-500" />

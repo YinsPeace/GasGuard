@@ -1,29 +1,34 @@
 import { useState, useEffect } from 'react'
 import { Flame, X, TrendingDown, TrendingUp, Crown, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { getCurrentGasPrices, getSubscriptionStatus } from '@/api/gasApi'
+import { getCurrentGasPrices, getSubscriptionStatus, getGasForecast } from '@/api/gasApi'
 
 export function FloatingGasWidget({ walletAddress = null }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [gasData, setGasData] = useState(null)
+  const [forecast, setForecast] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showTooltip, setShowTooltip] = useState(true) // Show tooltip on first load
   const [subscription, setSubscription] = useState(null)
 
   useEffect(() => {
-    const fetchGasPrices = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getCurrentGasPrices()
-        setGasData(data)
+        const [prices, forecastData] = await Promise.all([
+          getCurrentGasPrices(),
+          getGasForecast()
+        ])
+        setGasData(prices)
+        setForecast(forecastData)
       } catch (error) {
-        console.error('Failed to fetch gas prices:', error)
+        console.error('Failed to fetch data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchGasPrices()
-    const interval = setInterval(fetchGasPrices, 30000) // Update every 30s
+    fetchData()
+    const interval = setInterval(fetchData, 30000) // Update every 30s
 
     // Hide tooltip after 5 seconds
     const tooltipTimer = setTimeout(() => setShowTooltip(false), 5000)
@@ -57,7 +62,19 @@ export function FloatingGasWidget({ walletAddress = null }) {
 
   const hasSubscription = subscription?.status === 'active' || subscription?.status === 'trialing'
   const currentPrice = gasData.proposed || gasData.standard || 0
-  const status = currentPrice < 10 ? 'cheap' : currentPrice < 30 ? 'normal' : 'expensive'
+  
+  // Use forecast recommendation if available, otherwise fall back to price threshold
+  const forecastAction = forecast?.recommendation?.action || 'NEUTRAL'
+  let status = 'normal'
+  
+  if (forecastAction === 'SEND NOW') {
+    status = 'cheap'
+  } else if (forecastAction === 'WAIT') {
+    status = 'expensive'
+  } else {
+    // Fallback to price-based logic if no forecast
+    status = currentPrice < 10 ? 'cheap' : currentPrice < 30 ? 'normal' : 'expensive'
+  }
 
   const statusConfig = {
     cheap: {

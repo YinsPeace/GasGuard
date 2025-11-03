@@ -11,12 +11,12 @@ const LandingPage = ({ onConnectWallet }) => {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm">
               <Zap className="w-4 h-4 text-primary" />
-              <span>Smart gas optimization for Ethereum</span>
+              <span>Multi-chain gas optimization for smart traders</span>
             </div>
             
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
               Never Overpay for
-              <span className="block text-primary mt-2">Ethereum Gas Again</span>
+              <span className="block text-primary mt-2">Gas Fees Again</span>
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -64,7 +64,7 @@ const LandingPage = ({ onConnectWallet }) => {
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl md:text-4xl font-bold">Everything You Need to Save</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Powerful features designed to help you optimize every Ethereum transaction
+              Powerful features designed to help you optimize transactions across 8+ blockchains
             </p>
           </div>
 
@@ -286,7 +286,7 @@ const LandingPage = ({ onConnectWallet }) => {
           <div className="max-w-4xl mx-auto text-center space-y-8 p-12 rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-background to-background">
             <h2 className="text-4xl font-bold">Ready to Start Saving?</h2>
             <p className="text-xl text-muted-foreground">
-              Join thousands of users who are already optimizing their Ethereum transactions
+              Join users who are already optimizing their multi-chain transactions and saving on gas fees
             </p>
             <button
               onClick={onConnectWallet}

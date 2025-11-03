@@ -92,6 +92,12 @@ export function SettingsCard({ walletAddress }) {
   }
 
   const handleConnectTelegram = async () => {
+    // Check if user has active subscription
+    if (!hasSubscription) {
+      alert('🔒 Telegram alerts are a Premium feature. Please subscribe to GasGuard Pro to enable real-time alerts.')
+      return
+    }
+
     try {
       const result = await connectTelegram(walletAddress)
       if (result.botUrl) {
@@ -213,8 +219,12 @@ export function SettingsCard({ walletAddress }) {
             </div>
           </div>
         ) : (
-          <Button onClick={handleConnectTelegram} className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-            Connect Telegram
+          <Button 
+            onClick={handleConnectTelegram} 
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+            disabled={!hasSubscription}
+          >
+            {hasSubscription ? 'Connect Telegram' : '🔒 Connect Telegram (Premium)'}
           </Button>
         )}
       </div>
