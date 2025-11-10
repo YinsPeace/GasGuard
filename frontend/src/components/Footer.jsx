@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Github, Mail } from 'lucide-react';
+import { Github, Mail, ArrowUp } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,7 +20,7 @@ const Footer = () => {
               <span className="font-bold text-lg">GasGuard</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Optimize your Ethereum transactions with smart gas price predictions.
+              Optimize your multi-chain transactions with smart gas price predictions.
             </p>
           </div>
 
@@ -34,7 +34,7 @@ const Footer = () => {
                 <span className="font-bold text-lg">GasGuard</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-4">
-                Optimize your Ethereum transactions with smart gas price predictions.
+                Optimize your multi-chain transactions with smart gas price predictions.
               </p>
               <a 
                 href="https://t.me/GasGuardAppBot" 
@@ -165,7 +165,7 @@ const Footer = () => {
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>Made with</span>
               <span className="text-primary">⚡</span>
-              <span>for Ethereum</span>
+              <span>for blockchain traders</span>
             </div>
           </div>
         </div>

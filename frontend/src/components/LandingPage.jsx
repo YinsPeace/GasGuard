@@ -1,9 +1,11 @@
 import React from 'react';
 import { ArrowRight, Zap, Bell, TrendingDown, Shield, Clock, Bot } from 'lucide-react';
+import ScrollToTop from './ScrollToTop';
 
 const LandingPage = ({ onConnectWallet }) => {
   return (
     <div className="min-h-screen bg-background">
+      <ScrollToTop />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
