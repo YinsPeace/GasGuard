@@ -60,6 +60,9 @@ coverage/
 .claude/
 .windsurf/
 
+# Local AI Agents (not tracked in git)
+backend/src/agents/
+
 # Development/planning docs (keep these local, not in repo)
 PLAN.md
 HACKATHON_*.md
